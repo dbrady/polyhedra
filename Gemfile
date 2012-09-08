@@ -1,4 +1,9 @@
 source "http://rubygems.org"
 
-# Specify your gem's dependencies in dicebag.gemspec
-gemspec
+group :development do
+  gem "rspec"
+  gem "guard"
+  gem "guard-rspec"
+  gem "rb-fsevent"
+end
+
