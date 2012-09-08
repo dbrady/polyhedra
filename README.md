@@ -118,6 +118,27 @@ I am open to changing the interface to cascade like so:
 4.d6.r1.k3("+1x10") but honestly this still looks unnecessarily
 complicated. Better to just use Dice.new() at this point.
 
+Then again, since we have to catch method_missing to allow for
+arbitrary digits, maybe we could steal a page from the Rails playbook
+and allow longer methods names that encode the entire sequence, such
+as:
+
+    4.d6r1t3
+    # => <Dice: 4d6r1t3
+
+The only gotcha is that we can't capture +/- in its proper place
+(immediately after the dX sequence). Legal ruby would be `4.d6r1t3+3`
+but proper dice notation would `4.d6+3r1t3` which won't work.
+
+Hrm, if a Dice.new() or Fixnum#dXX statement returns a Dice object,
+maybe we should define +,-,*,/ etc to return new Dice objects?
+
+    d6
+    # => <Dice: 1d6>
+    d6 + 1
+    # => <Dice: 1d6+1>
+
+
 ## Complex Notation
 
 A set of Dice can be collected into a DiceSet and rolled as a unit:
