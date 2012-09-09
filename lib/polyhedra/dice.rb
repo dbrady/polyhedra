@@ -1,9 +1,9 @@
 module Polyhedra
   class Dice
-    attr_accessor :number, :sides, :offset, :multiplier, :divisor
+    attr_accessor :number, :sides, :offset, :multiplier, :divisor, :reroll_under, :take_top
 
     def initialize(dice_expression)
-      @offset = 0
+      @offset = @reroll_under = 0
       @multiplier = @divisor = 1
       dice_expression.gsub!(/s+/, '')
 
@@ -12,27 +12,39 @@ module Polyhedra
 
       while dice_expression.length > 0
         action, amount, dice_expression = pop_expression(dice_expression)
+        amount = amount.to_i
         case action
         when 'd'
-          self.sides = amount.to_i
+          self.sides = amount
         when '+'
-          self.offset = amount.to_i
+          self.offset = amount
         when '-'
-          self.offset = -amount.to_i
+          self.offset = -amount
         when '*', 'x'
-          self.multiplier = amount.to_i
+          self.multiplier = amount
         when '/'
-          self.divisor = amount.to_i
+          self.divisor = amount
+        when 'r'
+          self.reroll_under = amount
+        # when 't'
+        #   self.take_top = amount
         end
       end
     end
 
     def roll
-      Array.new(number) { rand(sides)+1 }.inject {|a,b| a+b }
+      rolled_dice = []
+
+      while rolled_dice.size < number
+        roll=rand(sides)+1
+        rolled_dice << roll if roll > reroll_under
+      end
+
+      rolled_dice.inject {|a,b| a+b}
     end
 
     def min
-      ((number + offset) * multiplier) / divisor
+      ((number + offset + (reroll_under*number)) * multiplier) / divisor
     end
 
     def max

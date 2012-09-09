@@ -31,6 +31,18 @@ module Polyhedra
       it { Dice.new("1d6/2").max.should == 3 }
     end
 
+    context "with reroll_under" do
+      let(:dice) { Dice.new("3d6r1") }
+
+      it { dice.reroll_under.should == 1 }
+      it { dice.min.should == 6 }
+      it { dice.max.should == 18 }
+      it { 100.times { dice.roll.should >= 6 }}
+    end
+
+    # context "with take_top" do
+    #   it { Dice.new("4d6t3").take_top.should == 3 }
+    # end
 
     describe "#pop_expression" do
       describe "returns subexpression, rest_of_string"  do
