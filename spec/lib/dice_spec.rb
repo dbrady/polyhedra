@@ -96,6 +96,27 @@ module Polyhedra
         it { Dice.new("1d6").pop_expression("r3string").should == ["r", "3", "string"] }
       end
     end
+
+    describe "#to_s" do
+      it { Dice.new("d20").to_s.should == "1d20" }
+      it { Dice.new("1d4*10").to_s.should =="1d4x10" }
+
+      # These expressions should all parse and to_s as themselves
+      [ "3d6",
+        "1d4+1",
+        "3d6r1",
+        "4d6t3",
+        "6d6+3r2t4",
+        "1d10x10",
+        "1d4+2x10",
+        "1d6/2",
+        "9d8+2x5r2t6"
+      ].each do |str|
+        it "correctly parses '#{str}'" do
+          Dice.new(str).to_s.should eq str
+        end
+      end
+    end
   end
 end
 

@@ -4,11 +4,12 @@ module Polyhedra
     attr_writer :rng
 
     def initialize(dice_expression)
+      dice_expression = dice_expression.gsub(/s+/, '')
+
       @offset = @reroll_under = 0
       @multiplier = @divisor = 1
-      dice_expression.gsub!(/s+/, '')
 
-      @take_top = @number = dice_expression.to_i
+      @take_top = @number = [1, dice_expression.to_i].max
       dice_expression.sub!(/^\d+/, '')
 
       while dice_expression.length > 0
@@ -31,6 +32,17 @@ module Polyhedra
           self.take_top = amount
         end
       end
+    end
+
+    def to_s
+      str = ""
+      str << "%dd%d" % [number, sides]
+      str << "%+d" % offset unless offset.zero?
+      str << "x%d" % multiplier unless multiplier == 1
+      str << "/%d" % divisor unless divisor == 1
+      str << "r%d" % reroll_under unless reroll_under.zero?
+      str << "t%d" % take_top unless take_top == number
+      str
     end
 
     def roll
