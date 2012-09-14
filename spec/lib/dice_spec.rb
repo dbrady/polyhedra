@@ -1,6 +1,33 @@
 require 'spec_helper'
 require 'polyhedra/dice'
 
+# I roll twenties! rand(n) always returns max possible value
+class LuckyRng < Random
+  def rand(num)
+    num-1
+  end
+end
+
+# Returns 0, 1, 2, ..., n-1 in order.
+class GaussianRng < Random
+  def rand(num)
+    @sequence ||= (0..num).cycle
+    @sequence.next
+  end
+end
+
+# Returns... whatever... you tell... it to...
+class JediMindTrickRng < Random
+  def initialize(sequence)
+    @sequence = sequence.cycle
+    super(0)
+  end
+
+  def rand(num)
+    @sequence.next
+  end
+end
+
 module Polyhedra
   describe Dice do
     context "simple dice expression" do
@@ -33,16 +60,36 @@ module Polyhedra
 
     context "with reroll_under" do
       let(:dice) { Dice.new("3d6r1") }
-
+      before(:each) do
+        dice.rng = JediMindTrickRng.new [0, 1, 0, 2, 0, 3]
+      end
       it { dice.reroll_under.should == 1 }
       it { dice.min.should == 6 }
       it { dice.max.should == 18 }
-      it { 100.times { dice.roll.should >= 6 }}
+
+      it { dice.roll.should == 9 }
     end
 
-    # context "with take_top" do
-    #   it { Dice.new("4d6t3").take_top.should == 3 }
-    # end
+    context "with take_top" do
+      let(:dice) { Dice.new("4d6t3") }
+      it { dice.take_top.should == 3 }
+      it { dice.max.should == 18 }
+      it { dice.min.should == 3 }
+      context "with loaded dice" do
+        before :each do
+          dice.rng = JediMindTrickRng.new [2,0,4,5]
+        end
+        it { dice.roll.should == 14 }
+      end
+    end
+
+    context "when I roll twenties" do
+      let(:dice) { Dice.new("4d6") }
+      before :each do
+        dice.rng = LuckyRng.new
+      end
+      it { dice.roll.should == 24 }
+    end
 
     describe "#pop_expression" do
       describe "returns subexpression, rest_of_string"  do
