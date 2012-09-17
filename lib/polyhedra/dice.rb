@@ -87,7 +87,7 @@ module Polyhedra
     end
 
     def <=>(other)
-      a,b = [:sides, :number, :multiplier, :inverted_divisor].map {|sym| [send(sym), other.send(sym)] }.detect {|a,b| (a <=> b) != 0 }
+      a,b = [:sides, :number, :multiplier, :inverted_divisor, :offset].map {|sym| [send(sym), other.send(sym)] }.detect {|a,b| (a <=> b) != 0 }
       a <=> b
       # if sides != other.sides
       #   sides <=> other.sides

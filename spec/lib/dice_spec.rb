@@ -124,6 +124,13 @@ module Polyhedra
       it("favors number second") { Dice.new("3d6").should > Dice.new("2d6") }
       it("favors multipliers third") { Dice.new("3d6x10").should > Dice.new("3d6x8") }
       it("favors divisors third") { Dice.new("3d6/10").should < Dice.new("3d6/8") }
+      it("favors offset fourth") { Dice.new("3d6+3").should > Dice.new("3d6") }
+    end
+
+    describe "dice math" do
+      describe "addition" do
+        it { Dice.new("3d6")}
+      end
     end
   end
 end
