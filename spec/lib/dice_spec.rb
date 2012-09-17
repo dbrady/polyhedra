@@ -117,6 +117,14 @@ module Polyhedra
         end
       end
     end
+
+    describe "comparison" do
+      it { Dice.new("3d6").should == Dice.new("3d6") }
+      it("favors bases first") { Dice.new("10d4").should < Dice.new("1d5") }
+      it("favors number second") { Dice.new("3d6").should > Dice.new("2d6") }
+      it("favors multipliers third") { Dice.new("3d6x10").should > Dice.new("3d6x8") }
+      it("favors divisors third") { Dice.new("3d6/10").should < Dice.new("3d6/8") }
+    end
   end
 end
 

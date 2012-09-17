@@ -1,5 +1,7 @@
 module Polyhedra
   class Dice
+    include Comparable
+
     attr_accessor :number, :sides, :offset, :multiplier, :divisor, :reroll_under, :take_top
     attr_writer :rng
 
@@ -78,6 +80,28 @@ module Polyhedra
 
     def rand(num)
       rng.rand(num)
+    end
+
+    def inverted_divisor
+      1.0 / divisor
+    end
+
+    def <=>(other)
+      a,b = [:sides, :number, :multiplier, :inverted_divisor].map {|sym| [send(sym), other.send(sym)] }.detect {|a,b| (a <=> b) != 0 }
+      a <=> b
+      # if sides != other.sides
+      #   sides <=> other.sides
+      # else
+      #   if number != other.number
+      #     number <=> other.number
+      #   else
+      #     if multiplier != other.multiplier
+      #       multiplier <=> other.multiplier
+      #     else
+      #       -divisor <=> -other.divisor
+      #     end
+      #   end
+      # end
     end
 
     private
