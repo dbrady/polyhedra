@@ -16,7 +16,7 @@ module DiceStats
     end
 
     def std_dev
-      self.variance ** 0.5 # the 0.5 power is the sqrt!
+      Math::sqrt(self.variance)
     end
   end
 
