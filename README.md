@@ -158,9 +158,8 @@ A set of Dice can be collected into a DiceSet and rolled as a unit:
 ## Units
 
 Each Dice object can have its own units, and units are treated as a
-higher-order grouping than number of sides. Note that #min, #max and
-#roll will return an array of pairs containing the amount and unit for
-each type of dice.
+higher-order grouping than number of sides. Note that #min, #max and #roll will
+return an array of pairs containing the amount and unit for each type of dice.
 
     bag = DiceSet.new
     bag << 1.d6("fire")
