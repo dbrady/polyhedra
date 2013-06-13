@@ -6,7 +6,7 @@ module Polyhedra
     attr_writer :rng
 
     def initialize(dice_expression)
-      dice_expression = dice_expression.gsub(/s+/, '')
+      dice_expression = dice_expression.gsub(/^\s+/, '')
 
       @offset = @reroll_under = 0
       @multiplier = @divisor = 1
